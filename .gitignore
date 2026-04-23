@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.cache/
+wiki-cache.sqlite
+.env
+.env.local
+*.log
+.DS_Store
