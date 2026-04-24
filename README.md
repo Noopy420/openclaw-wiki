@@ -382,20 +382,6 @@ first if the Chunk namespace doesn't appear.
 
 ---
 
-## Refreshing the screenshots
-
-The README screenshots in `docs/screenshots/` are captured by a small
-Playwright script. To regenerate them after a UI change:
-
-```bash
-npm install                       # if you haven't already
-npx playwright install chromium   # one-time browser download
-npm start                         # in another terminal
-node scripts/screenshots.mjs
-```
-
-Outputs PNGs to `docs/screenshots/`. Set `WIKI_BASE` or `WIKI_ARTICLE_ID`
-env vars to override the URL or which article gets featured.
 
 ## License
 
