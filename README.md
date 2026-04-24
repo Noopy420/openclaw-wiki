@@ -4,6 +4,8 @@
 > Runs entirely on your own machine, reads and writes directly to `~/.openclaw/`,
 > never phones home.
 
+![Home page](docs/screenshots/home.png)
+
 OpenClaw's agents accumulate a lot of memory — daily dream diaries, identity
 files, extracted chunks with embeddings, memory-palace pages synthesized from
 session history. All of it lives as markdown and SQLite inside `~/.openclaw/`,
@@ -14,6 +16,45 @@ summaries, a table of contents, wikilinks between articles, a "What links
 here" backlinks panel, search, categories, and — unlike a typical
 memory-viewer — a built-in editor so you can curate, correct, and expand the
 wiki by hand.
+
+---
+
+## Screenshots
+
+<table>
+<tr>
+<td width="50%">
+
+**Article view** — TOC, body with auto-wikilinks, "What links here" panel.
+
+![Article](docs/screenshots/article.png)
+
+</td>
+<td width="50%">
+
+**Editor** — split-pane markdown with live preview; safe writes leave a `.bak-<ts>` next to every save.
+
+![Editor](docs/screenshots/editor.png)
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**Setup & config** — installed version, gateway health, models, plugins, skills (with bin/env checks), cron jobs, dependencies.
+
+![Setup](docs/screenshots/setup.png)
+
+</td>
+<td width="50%">
+
+**Search** — hybrid keyword + FTS5 search with snippet highlighting across every memory source.
+
+![Search](docs/screenshots/search.png)
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -340,6 +381,21 @@ first if the Chunk namespace doesn't appear.
 - [ ] Markdown editor upgrade to CodeMirror for syntax highlighting + folding
 
 ---
+
+## Refreshing the screenshots
+
+The README screenshots in `docs/screenshots/` are captured by a small
+Playwright script. To regenerate them after a UI change:
+
+```bash
+npm install                       # if you haven't already
+npx playwright install chromium   # one-time browser download
+npm start                         # in another terminal
+node scripts/screenshots.mjs
+```
+
+Outputs PNGs to `docs/screenshots/`. Set `WIKI_BASE` or `WIKI_ARTICLE_ID`
+env vars to override the URL or which article gets featured.
 
 ## License
 
