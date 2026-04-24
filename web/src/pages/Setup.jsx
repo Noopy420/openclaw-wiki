@@ -348,15 +348,20 @@ export default function Setup() {
 
       {/* ---- Plugins ---- */}
       <Section title="Plugins">
+        <p className="oc-setup-hint oc-setup-legend">
+          A plugin loads when it's both <strong>enabled</strong> and in the{" "}
+          <strong>allowlist</strong>. Having no explicit config block is fine —
+          it just means the plugin runs with its built-in defaults.
+        </p>
         <table className="oc-setup-table">
           <thead>
             <tr>
-              <th>id</th>
-              <th>will load?</th>
-              <th>enabled in config</th>
-              <th>in allowlist</th>
-              <th>has config block</th>
-              <th>notes</th>
+              <th>Plugin</th>
+              <th>Will load?</th>
+              <th>Enabled</th>
+              <th>Allowlisted</th>
+              <th>Config source</th>
+              <th>Notes</th>
             </tr>
           </thead>
           <tbody>
@@ -370,8 +375,14 @@ export default function Setup() {
                 </td>
                 <td>{p.configuredEnabled ? "✓" : "—"}</td>
                 <td>{p.inAllowlist ? "✓" : "—"}</td>
-                <td>{p.hasConfig ? "✓" : "—"}</td>
-                <td className="oc-setup-hint">{p.note || ""}</td>
+                <td className="oc-setup-hint">
+                  {p.hasConfig
+                    ? "explicit block"
+                    : p.defaultsOnly
+                    ? "defaults"
+                    : "—"}
+                </td>
+                <td className="oc-setup-hint oc-plugin-note">{p.note || ""}</td>
               </tr>
             ))}
           </tbody>

@@ -234,6 +234,21 @@ async function getChannels(ocJson) {
   return out;
 }
 
+// Context strings for plugins that are expected to run with defaults or get
+// their config from somewhere other than plugins.entries. Having no entry
+// block for these is normal, not a warning.
+const DEFAULTS_ONLY_NOTE = "Using built-in defaults";
+const KNOWN_PLUGIN_NOTES = {
+  "memory-core":
+    "Core memory pipeline — runs with built-in defaults (uses the configured embedding provider).",
+  "memory-wiki":
+    "Compiles the memory palace — runs with built-in defaults.",
+  discord: "Config lives under `channels.discord`, not plugins.entries.",
+  telegram: "Config lives under `channels.telegram`, not plugins.entries.",
+  "metaclaw-openclaw":
+    "Loaded from the `extensions/` directory; its config is internal to the extension.",
+};
+
 async function getPluginsSummary(ocJson) {
   const entries = ocJson?.plugins?.entries || {};
   const allow = ocJson?.plugins?.allow || [];
@@ -244,8 +259,10 @@ async function getPluginsSummary(ocJson) {
     inAllowlist: allowSet.has(id),
     willLoad: p?.enabled !== false && allowSet.has(id),
     hasConfig: !!p?.config && Object.keys(p.config).length > 0,
+    defaultsOnly: false,
   }));
-  // Include allowlisted plugins that don't have explicit config.
+  // Include allowlisted plugins that don't have explicit config. These are
+  // NOT broken — they just use defaults.
   for (const a of allow) {
     if (!entries[a]) {
       out.push({
@@ -254,7 +271,8 @@ async function getPluginsSummary(ocJson) {
         inAllowlist: true,
         willLoad: true,
         hasConfig: false,
-        note: "allowlisted but no config entry",
+        defaultsOnly: true,
+        note: KNOWN_PLUGIN_NOTES[a] || DEFAULTS_ONLY_NOTE,
       });
     }
   }

@@ -18,8 +18,13 @@
   --oc-chunk: #7a2a6c;
   --oc-main: var(--oc-accent);
   --oc-mark: #fff3a0;
-  --oc-serif: "Linux Libertine", "Georgia", "Times New Roman", serif;
-  --oc-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* `display` is the modern sans used for titles/headers; `sans` is the
+     UI chrome body font; `reading` is for long-form article bodies. */
+  --oc-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --oc-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --oc-reading: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* Legacy alias so any remaining references keep working until migrated. */
+  --oc-serif: var(--oc-display);
 }
 
 * { box-sizing: border-box; }
@@ -36,6 +41,9 @@ body {
   background: var(--oc-bg);
   font-size: 14px;
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv11", "ss01", "ss03"; /* Inter stylistic sets: better letter shapes */
 }
 
 a {
@@ -89,10 +97,10 @@ a:hover { text-decoration: underline; }
   flex-direction: column;
 }
 .oc-logo-title {
-  font-family: var(--oc-serif);
+  font-family: var(--oc-display);
   font-size: 22px;
   font-weight: 700;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
 }
 .oc-logo-subtitle {
   font-size: 11px;
@@ -161,8 +169,8 @@ a:hover { text-decoration: underline; }
   flex: 1;
   padding: 24px 40px;
   min-width: 0;
-  font-family: var(--oc-serif);
-  font-size: 16px;
+  font-family: var(--oc-reading);
+  font-size: 15px;
   line-height: 1.6;
   max-width: 100%;
 }
@@ -176,11 +184,12 @@ a:hover { text-decoration: underline; }
 }
 
 .oc-title {
-  font-family: var(--oc-serif);
-  font-size: 32px;
-  font-weight: 400;
+  font-family: var(--oc-display);
+  font-size: 30px;
+  font-weight: 700;
   margin: 0 0 4px 0;
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.6px;
 }
 
 .oc-subtitle {
@@ -267,17 +276,18 @@ a:hover { text-decoration: underline; }
 .oc-article-body h2,
 .oc-article-body h3,
 .oc-article-body h4 {
-  font-family: var(--oc-serif);
-  font-weight: 400;
+  font-family: var(--oc-display);
+  font-weight: 600;
   border-bottom: 1px solid var(--oc-border-soft);
   padding-bottom: 4px;
   margin-top: 28px;
   margin-bottom: 12px;
+  letter-spacing: -0.3px;
 }
-.oc-article-body h1 { font-size: 26px; }
-.oc-article-body h2 { font-size: 22px; }
-.oc-article-body h3 { font-size: 18px; border-bottom: none; }
-.oc-article-body h4 { font-size: 15px; border-bottom: none; font-weight: 600; }
+.oc-article-body h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+.oc-article-body h2 { font-size: 20px; }
+.oc-article-body h3 { font-size: 17px; border-bottom: none; }
+.oc-article-body h4 { font-size: 14px; border-bottom: none; letter-spacing: 0; text-transform: uppercase; color: var(--oc-muted); }
 .oc-article-body p { margin: 0 0 12px 0; }
 .oc-article-body ul, .oc-article-body ol {
   margin: 0 0 12px 0;
@@ -504,10 +514,11 @@ a:hover { text-decoration: underline; }
   margin-bottom: 16px;
 }
 .oc-editor-header h1 {
-  font-family: var(--oc-serif);
-  font-weight: 400;
+  font-family: var(--oc-display);
+  font-weight: 700;
   margin: 0;
-  font-size: 26px;
+  font-size: 24px;
+  letter-spacing: -0.5px;
 }
 
 .oc-editor-toolbar {
@@ -566,8 +577,8 @@ a:hover { text-decoration: underline; }
   background: var(--oc-bg);
   border-radius: 2px;
   overflow-y: auto;
-  font-family: var(--oc-serif);
-  font-size: 16px;
+  font-family: var(--oc-reading);
+  font-size: 15px;
   line-height: 1.6;
 }
 
@@ -631,7 +642,7 @@ a:hover { text-decoration: underline; }
   font-family: var(--oc-sans);
   font-size: 14px;
 }
-.oc-setup .oc-title { font-family: var(--oc-serif); }
+.oc-setup .oc-title { font-family: var(--oc-display); }
 
 .oc-setup-section {
   background: var(--oc-bg);
@@ -650,10 +661,11 @@ a:hover { text-decoration: underline; }
   border-bottom: 1px solid var(--oc-border-soft);
 }
 .oc-setup-section-head h2 {
-  font-family: var(--oc-serif);
-  font-weight: 400;
-  font-size: 20px;
+  font-family: var(--oc-display);
+  font-weight: 600;
+  font-size: 19px;
   margin: 0;
+  letter-spacing: -0.3px;
 }
 
 .oc-setup-row {
@@ -786,6 +798,17 @@ a:hover { text-decoration: underline; }
   padding: 1px 4px;
 }
 
+.oc-setup-legend {
+  margin: 0 0 10px 0;
+  padding: 8px 12px;
+  background: var(--oc-bg-soft);
+  border-left: 3px solid var(--oc-border);
+  border-radius: 0 2px 2px 0;
+}
+.oc-plugin-note {
+  max-width: 380px;
+}
+
 .oc-setup-filter {
   display: flex;
   align-items: center;
@@ -811,8 +834,9 @@ a:hover { text-decoration: underline; }
   gap: 10px;
   align-items: center;
   margin-bottom: 8px;
-  font-family: var(--oc-serif);
-  font-size: 16px;
+  font-family: var(--oc-display);
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .oc-inline-list {
@@ -882,12 +906,13 @@ a:hover { text-decoration: underline; }
 }
 
 .oc-group-heading {
-  font-family: var(--oc-serif);
-  font-weight: 400;
-  font-size: 20px;
+  font-family: var(--oc-display);
+  font-weight: 600;
+  font-size: 18px;
   margin: 24px 0 8px 0;
   padding-bottom: 4px;
   border-bottom: 1px solid var(--oc-border-soft);
+  letter-spacing: -0.2px;
 }
 .oc-group-heading small {
   font-size: 13px;
