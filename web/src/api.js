@@ -35,6 +35,7 @@ export const api = {
   random: () => get("/random"),
   reindex: () => send("POST", "/reindex"),
   agents: () => get("/agents"),
+  setup: () => get("/setup"),
 
   // writes
   save: (id, content) =>

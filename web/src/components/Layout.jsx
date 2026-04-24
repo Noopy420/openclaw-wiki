@@ -31,6 +31,10 @@ export default function Layout({ children }) {
             <ul>
               <li><Link to="/create">Create new article</Link></li>
             </ul>
+            <h3>OpenClaw</h3>
+            <ul>
+              <li><Link to="/setup">Setup &amp; config</Link></li>
+            </ul>
             <h3>Browse</h3>
             <ul>
               <li><Link to="/?namespace=Main">Main articles</Link></li>

@@ -19,7 +19,7 @@
     "gray-matter": "^4.0.3"
   },
   "optionalDependencies": {
-    "better-sqlite3": "^11.5.0"
+    "better-sqlite3": "^12.9.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",

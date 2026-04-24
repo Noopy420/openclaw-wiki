@@ -29,6 +29,8 @@ wiki by hand.
 | **Safe writes** | Every save leaves a timestamped `.bak-<ts>` next to the file |
 | **Soft delete** | Removed pages are moved to `memory/.trash/`, never unlinked |
 | **Multi-agent** | Every agent's memory is indexed, filterable by namespace + agent |
+| **Filter / sort / group** | URL-backed filters: sort A–Z, recent, agent, namespace; group by namespace/agent/letter; editable-only toggle |
+| **Setup & config viewer** | One page showing installed version, gateway health, models, agents, channels, plugins, skills with requirement checks, cron jobs with last/next run, extensions, and dependency status |
 | **Live reload** | `chokidar` watches the filesystem; the catalog rebuilds on change |
 | **Local-only** | Binds `127.0.0.1`; no auth because nothing leaves your loopback |
 
@@ -161,6 +163,49 @@ a misclick is just a `mv` away.
 
 ---
 
+## Setup & config viewer
+
+Navigate to **Setup & config** in the sidebar (or visit
+<http://127.0.0.1:4700/setup>) for a single-page dashboard showing:
+
+- **Installed OpenClaw version** vs. the version that last touched the config
+- **Gateway health**: is it reachable on its configured port, auth mode, bind
+  address, control-UI origins, and whether device auth is disabled
+- **Models**: every provider, their API key status (masked), every defined
+  model, and which one is the primary vs. fallback. Flags any referenced
+  model that isn't actually defined in `models.providers`
+- **Agents**: the union of agents declared in config and agents present on
+  disk, with their workspace paths
+- **Channels**: Discord/Telegram/etc. — enabled, token status, guild count
+- **Plugins**: whether each one will actually load (enabled ∧ in allowlist),
+  and whether it has a config block
+- **Skills**: scans `openclaw/skills/*/SKILL.md`, parses the frontmatter,
+  and reports for each skill whether required binaries are on PATH and
+  whether required env vars / API keys are set. Filter by name
+- **Cron jobs**: each job's schedule, last run time, last status, next run
+  time, duration, and delivery target
+- **Extensions**: whether Python-based extensions have a built venv
+- **Dependencies**: `better-sqlite3`, `node`, `python` — installed or not,
+  with `howToFix` hints when something's missing
+
+All read-only — it just reports what's on disk and what the gateway responds
+with. Nothing is written.
+
+## Filtering & organizing articles
+
+The home page has a filter bar with:
+
+- **Full-text filter** — narrow by title/summary substring
+- **Sort** — title A-Z, title Z-A, recently updated, oldest, agent, namespace
+- **Group by** — flat list, namespace, agent, or first letter (Wikipedia-style
+  alphabetical index)
+- **Agent** — show only articles from one agent
+- **Namespace** — show only Main / Diary / Identity / Chunk
+- **Editable only** — hide synthesized and read-only pages
+
+All filter state is stored in the URL, so bookmarks and links preserve your
+current view.
+
 ## API reference
 
 Everything the frontend does is available as a JSON API on `:4700`.
@@ -178,6 +223,7 @@ GET  /api/categories                   [{name, count}] sorted by count
 GET  /api/recent                       most recently updated articles
 GET  /api/random                       { id } — random article
 GET  /api/agents                       [agent, ...] for the create form
+GET  /api/setup                        full config/state snapshot for the setup page
 ```
 
 ### Write
@@ -204,6 +250,7 @@ server/
 ├── wikilinks.mjs  entity index + [[wikilink]] injection
 ├── search.mjs     hybrid keyword search
 ├── editor.mjs     safe writes: save / create / delete
+├── setup.mjs      config + skills + cron + deps inspector (read-only)
 ├── routes.mjs     REST endpoints
 └── index.mjs      Fastify server + chokidar watcher
 
@@ -221,10 +268,11 @@ web/
     │   ├── ArticleBody.jsx   markdown renderer + wikilink resolution
     │   └── TableOfContents.jsx
     └── pages/
-        ├── Home.jsx          front page / namespace index
+        ├── Home.jsx          front page + filter/sort/group toolbar
         ├── Article.jsx       read view
         ├── Edit.jsx          split-pane editor
         ├── Create.jsx        new-article form
+        ├── Setup.jsx         OpenClaw setup/config dashboard
         ├── Search.jsx
         ├── Category.jsx
         ├── Recent.jsx
@@ -258,18 +306,25 @@ to `wiki.sqlite` — see the roadmap below.
 
 ## Optional: SQLite chunks source
 
-The `Chunk` namespace requires `better-sqlite3`, which needs a C++ toolchain
-on Windows. If it isn't installed the app still works — you just don't get
-that namespace. It's declared as an `optionalDependency` so `npm install`
-won't fail if the native build breaks.
+The `Chunk` namespace requires `better-sqlite3`, which wraps the native
+SQLite C library. It's declared as an `optionalDependency` so `npm install`
+never fails because of it — if it's missing, you just lose that namespace.
 
-To enable it on Windows:
+The package ships prebuilt binaries for common Node versions:
 
-1. Install Visual Studio Build Tools with the "Desktop development with C++"
-   workload, *or*
-2. Use a Node version with prebuilt `better-sqlite3` binaries (for Node 18/20
-   it typically just works).
-3. Re-run `npm install`.
+- **Node 18 / 20 / 22**: works out of the box with `better-sqlite3` 11.x.
+- **Node 24**: needs `better-sqlite3` **12.x** or later (12.x added prebuilt
+  Windows binaries for Node 24). This repo targets `^12.9.0`.
+
+If you hit a build error mentioning Visual Studio, it means `npm` fell back
+to compiling from source. Either:
+
+1. Upgrade `better-sqlite3` (`npm install better-sqlite3@latest`), or
+2. Install Visual Studio Build Tools with the "Desktop development with C++"
+   workload so the source build can complete.
+
+The **Setup & config** page shows live dependency status — check there
+first if the Chunk namespace doesn't appear.
 
 ---
 

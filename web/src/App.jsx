@@ -9,6 +9,7 @@ import Recent from "./pages/Recent.jsx";
 import Random from "./pages/Random.jsx";
 import Edit from "./pages/Edit.jsx";
 import Create from "./pages/Create.jsx";
+import Setup from "./pages/Setup.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/category/:name" element={<Category />} />
         <Route path="/special/recent" element={<Recent />} />
         <Route path="/special/random" element={<Random />} />
+        <Route path="/setup" element={<Setup />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>

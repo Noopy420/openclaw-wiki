@@ -9,6 +9,7 @@ import {
   deleteArticle,
   listAgentsForCreate,
 } from "./editor.mjs";
+import { buildSetupReport } from "./setup.mjs";
 
 export function registerRoutes(app) {
   app.get("/api/status", async () => {
@@ -173,6 +174,10 @@ export function registerRoutes(app) {
 
   app.get("/api/agents", async () => {
     return { agents: await listAgentsForCreate() };
+  });
+
+  app.get("/api/setup", async () => {
+    return await buildSetupReport();
   });
 }
 
