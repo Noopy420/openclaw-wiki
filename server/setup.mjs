@@ -190,7 +190,9 @@ function summarizeModels(ocJson) {
 
 async function getAgentsSummary(ocJson) {
   const configList = ocJson?.agents?.list || [];
-  const dirs = await dirListSafe(config.agentsDir, { dirs: true });
+  const dirs = (await dirListSafe(config.agentsDir, { dirs: true })).filter(
+    (d) => !d.startsWith(".")
+  );
   const merged = new Map();
   for (const d of dirs) {
     merged.set(d, { id: d, configured: false, onDisk: true });

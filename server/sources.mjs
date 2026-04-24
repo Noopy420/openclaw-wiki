@@ -26,11 +26,13 @@ try {
 // Markdown file discovery
 // ---------------------------------------------------------------------------
 
-/** List agent ids by scanning the agents/ directory. */
+/** List agent ids by scanning the agents/ directory. Skips dot-dirs. */
 export async function listAgents() {
   try {
     const entries = await fs.readdir(config.agentsDir, { withFileTypes: true });
-    return entries.filter((e) => e.isDirectory()).map((e) => e.name);
+    return entries
+      .filter((e) => e.isDirectory() && !e.name.startsWith("."))
+      .map((e) => e.name);
   } catch {
     return [];
   }
@@ -130,7 +132,7 @@ export async function loadIdentityPages() {
   const agents = await listAgents();
   const IDENTITY_NAMES = [
     "IDENTITY.md", "SOUL.md", "USER.md", "AGENTS.md",
-    "BOOTSTRAP.md", "HEARTBEAT.md", "TOOLS.md",
+    "BOOTSTRAP.md", "HEARTBEAT.md", "TOOLS.md", "MEMORY.md",
   ];
   for (const agent of agents) {
     const agentRoot = path.join(config.agentsDir, agent);
